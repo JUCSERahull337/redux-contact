@@ -1,35 +1,52 @@
-import React,{useState} from 'react';
-import {useDispatch} from 'react-redux'
-import {addContact} from '../../redux/contactAction'
-import shortid from 'shortid'
-import {useHistory} from 'react-router-dom'
-import './AddContact.css'
+import React,{useState,useEffect} from 'react';
+import {useDispatch,useSelector} from 'react-redux'
+import {getContact,updateContact} from '../../redux/contactAction'
+//import shortid from 'shortid'
+import {useParams,useHistory} from 'react-router-dom'
 
-const AddContact = () => {
+import './EditContact.css'
+
+const EditContact = () => {
+    let {id}=useParams();
+
     let history= useHistory()
     const dispatch=useDispatch()
+    const contact = useSelector((state) => state.contact)
+    
     const[name , setName]= useState('');
     const[phone, setPhone]= useState('');
     const [email, setEmail]= useState('')
 
-    const createContact = e => {
+    useEffect(()=>{
+        console.log('hello')
+        console.log('contact',contact)
+        if(contact != null){
+            setName(contact.name);
+            setPhone(contact.phone);
+            setEmail(contact.email);
+        }
+        console.log(name)
+        dispatch(getContact(id))
+    },[contact]);
+    
+    const onUpdateContact= (e) => {
         e.preventDefault();
-        //console.log(name, phone, email);
-        const new_contact={
-            id: shortid.generate(),
-            name: name, 
+        const update_Contact = Object.assign(contact, { 
+            name: name,
             phone: phone,
-            email: email
-        };
-        dispatch(addContact(new_contact))
-        history.push('/');
+            email: email,
+        })
+        dispatch(updateContact(update_Contact))
+        history.push('/')
+
+        //console.log(updateContact)
     }
 
     return (
         <div className=' card border-0 shadow'>
-            <div className ='card-header'> Add Contact</div>
+            <div className ='card-header'> Edit Contact</div>
             <div className='card-body'>
-                <form onSubmit={(e)=> createContact(e)}>
+                <form onSubmit={(e) => onUpdateContact(e)}>
                     <div className='form-group my-2'>
                         <input type='text' className='form-control' placeholder='Enter Your Name' value={name}
                         onChange={(e)=> setName(e.target.value)}
@@ -47,7 +64,7 @@ const AddContact = () => {
                         onChange={(e)=> setEmail(e.target.value)}
                         />
                     </div>
-                    <button className='btn btn-primary' type='submit'>Create Contact</button>
+                    <button className='btn btn-primary' type='submit'>Update Contact</button>
                 </form>
 
             </div>
@@ -55,4 +72,4 @@ const AddContact = () => {
         </div>
     )
 }
-export default AddContact;
+export default EditContact;

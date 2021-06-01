@@ -8,9 +8,10 @@ import {
   Route,
   Link
 } from "react-router-dom";
-import {povider, Provider} from 'react-redux'
+import { Provider} from 'react-redux'
 import store from  './redux/store.js'
 import AddContact from './components/AddContact/AddContact'
+import EditContact from './components/EditContact/EditContact'
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
                 <Switch>
                   <Route exact path='/' component={Contacts} />
                   <Route exact path='/contacts/add' component={AddContact} />
+                  <Route exact path='/contacts/edit/:id' component={EditContact} />
 
                 </Switch>
               </div>
